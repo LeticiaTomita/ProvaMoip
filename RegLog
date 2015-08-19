@@ -1,0 +1,81 @@
+public class RegLog implements Comparable<RegLog>{
+
+	private String url = "";
+	private String codeStatus = "";
+	private long qtdeOcorrencia = 0;
+	private static int sortMode = 0;
+
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	public String getCodeStatus() {
+		return codeStatus;
+	}
+	public void setCodeStatus(String codeStatus) {
+		this.codeStatus = codeStatus;
+	}
+	public long getQtdeOcorrencia() {
+		return qtdeOcorrencia;
+	}
+	public void incrementaQtdeOcorrencia() {
+		this.qtdeOcorrencia ++;
+	}
+
+	public static int getSortMode() {
+		return sortMode;
+	}
+	public static void setSortMode(int sortMode) {
+		RegLog.sortMode = sortMode;
+	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((codeStatus == null) ? 0 : codeStatus.hashCode());
+		result = prime * result + ((url == null) ? 0 : url.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RegLog other = (RegLog) obj;
+		if (codeStatus == null) {
+			if (other.codeStatus != null)
+				return false;
+		} else if (!codeStatus.equals(other.codeStatus))
+			return false;
+		if (url == null) {
+			if (other.url != null)
+				return false;
+		} else if (!url.equals(other.url))
+			return false;
+		return true;
+	}
+
+	@Override
+	public int compareTo(RegLog o) {
+		if(sortMode == 0){
+			if (this.getQtdeOcorrencia() > o.getQtdeOcorrencia()) {
+				return -1;
+			} 
+			if (this.getQtdeOcorrencia() < o.getQtdeOcorrencia()) {
+				return 1;
+			}
+		}
+		else{
+			return this.getCodeStatus().compareTo(o.getCodeStatus());
+		}
+		return 0;
+	}
+
+}
