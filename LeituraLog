@@ -16,7 +16,7 @@ public class LeituraLog {
 	List <RegLog> resultadoPorCod;
 
 	public static void main(String... aArgs) throws IOException {
-		LeituraLog parser = new LeituraLog("C:/teste.txt");
+		LeituraLog parser = new LeituraLog("C:/log.txt");
 		parser.processaLinha();
 	}
 
