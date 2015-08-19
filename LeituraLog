@@ -1,0 +1,103 @@
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Scanner;
+import java.util.regex.*;
+
+
+public class LeituraLog {
+
+	List <RegLog> resultadoPorURL;
+	List <RegLog> resultadoPorCod;
+
+	public static void main(String... aArgs) throws IOException {
+		LeituraLog parser = new LeituraLog("C:/teste.txt");
+		parser.processaLinha();
+	}
+
+	public LeituraLog(String aFileName){
+		fFilePath = Paths.get(aFileName);
+	}
+
+	public final void processaLinha() throws IOException {
+		resultadoPorURL = new ArrayList<RegLog>();
+		resultadoPorCod = new ArrayList<RegLog>();
+
+		try (Scanner scanner =  new Scanner(fFilePath, ENCODING.name())){
+			while (scanner.hasNextLine()){
+				processLine(scanner.nextLine());
+			}      
+		}
+
+		Collections.sort(resultadoPorURL); 
+
+		for(int index = 0; index <3; index++){
+			RegLog registro = resultadoPorURL.get(index);
+			System.out.println(registro.getUrl() + " - " + registro.getQtdeOcorrencia());
+		}
+		System.out.println(" ");
+		RegLog.setSortMode(1);	    
+		Collections.sort(resultadoPorCod); 
+
+		for (RegLog registro : resultadoPorCod) {
+			System.out.println(registro.getCodeStatus() + " - " + registro.getQtdeOcorrencia());
+		}
+	}
+
+	protected void processLine(String aLine){
+
+		Scanner scanner = new Scanner(aLine);
+		scanner.useDelimiter("\t");
+		if (scanner.hasNext()){
+			String line = scanner.next();
+
+			Pattern padrao = Pattern.compile("request_to=\"(.*?)\"");  
+			Matcher m = padrao.matcher(line);        
+
+			String key = "";
+			if (m.find()) {  
+				key = m.group(1);
+				RegLog registro = new RegLog();
+				registro.setUrl(key); 
+				registro.incrementaQtdeOcorrencia();
+				if(!resultadoPorURL.contains(registro)){
+					resultadoPorURL.add(registro);
+				} else {
+					int index = resultadoPorURL.indexOf(registro);
+					registro = resultadoPorURL.get(index);
+					registro.incrementaQtdeOcorrencia();
+				}
+			} 
+
+			padrao = Pattern.compile("response_status=\"(.*?)\"");  
+			m = padrao.matcher(line);  
+			if (m.find()) {   
+				key = m.group(1);
+				RegLog registro = new RegLog();
+				registro.setCodeStatus(key); 
+				registro.incrementaQtdeOcorrencia();
+				if(!resultadoPorCod.contains(registro)){
+					resultadoPorCod.add(registro);
+				} else {
+					int index = resultadoPorCod.indexOf(registro);
+					registro = resultadoPorCod.get(index);
+					registro.incrementaQtdeOcorrencia();
+				}
+
+			} 
+		}
+	}
+
+	private final Path fFilePath;
+	private final static Charset ENCODING = StandardCharsets.UTF_8;  
+
+	private static void log(Object aObject){
+		System.out.println(String.valueOf(aObject));
+	}
+
+}
