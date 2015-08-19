@@ -16,6 +16,7 @@ public class LeituraLog {
 	List <RegLog> resultadoPorCod;
 
 	public static void main(String... aArgs) throws IOException {
+		//Lendo arquivo
 		LeituraLog parser = new LeituraLog("C:/log.txt");
 		parser.processaLinha();
 	}
@@ -24,6 +25,7 @@ public class LeituraLog {
 		fFilePath = Paths.get(aFileName);
 	}
 
+	// Método para verificar o log
 	public final void processaLinha() throws IOException {
 		resultadoPorURL = new ArrayList<RegLog>();
 		resultadoPorCod = new ArrayList<RegLog>();
@@ -34,21 +36,27 @@ public class LeituraLog {
 			}      
 		}
 
+		// Ordenando resultado por URL
 		Collections.sort(resultadoPorURL); 
 
+		//Imprimindo resultado
 		for(int index = 0; index <3; index++){
 			RegLog registro = resultadoPorURL.get(index);
 			System.out.println(registro.getUrl() + " - " + registro.getQtdeOcorrencia());
 		}
 		System.out.println(" ");
+		
+		//Ordenando resultado por Status
 		RegLog.setSortMode(1);	    
 		Collections.sort(resultadoPorCod); 
 
+		//Imprimindo resultado
 		for (RegLog registro : resultadoPorCod) {
 			System.out.println(registro.getCodeStatus() + " - " + registro.getQtdeOcorrencia());
 		}
 	}
 
+	//Metódo para fazer a comparação 
 	protected void processLine(String aLine){
 
 		Scanner scanner = new Scanner(aLine);
